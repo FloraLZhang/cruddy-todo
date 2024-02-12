@@ -12,6 +12,7 @@ var counter = 0;
 // https://www.google.com/search?q=what+is+a+zero+padded+number%3F
 
 const zeroPaddedNumber = (num) => {
+  //Uses the sprintf function with a format string '%05d' to convert num into a zero-padded string with a minimum length of 5 digits
   return sprintf('%05d', num);
 };
 
@@ -38,9 +39,23 @@ const writeCounter = (count, callback) => {
 
 // Public API - Fix this function //////////////////////////////////////////////
 
-exports.getNextUniqueId = () => {
-  counter = counter + 1;
-  return zeroPaddedNumber(counter);
+exports.getNextUniqueId = (callback) => {
+  // counter = counter + 1;
+  // return zeroPaddedNumber(counter);
+  readCounter((err, counter) => {
+    if (err) {
+      throw ("Error reading count. Error: ", err);
+    };
+    // // Read the current counter value
+    writeCounter(counter + 1, (err, formattedCounter) => {
+      if (err) {
+        throw ("Error writting count. Error: ", err);
+      } else {
+        //Return the updated counter value through the callback
+        callback(null, formattedCounter);
+      }
+    });
+  });
 };
 
 
